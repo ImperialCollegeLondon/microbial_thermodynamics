@@ -1,2 +1,2 @@
-# microbial_thermodynamics
-A repository for simulating thermodynamically limited microbial ecosystems
+# `microbial_thermodynamics`
+This repository contains code for simulating thermodynamically limited microbial ecosystems.
