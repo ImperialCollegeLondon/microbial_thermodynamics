@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "microbial-thermodynamics"
+version = "0.1.0"
+description = ""
+authors = ["Jacob Cook <jc2017@ic.ac.uk>"]
+readme = "README.md"
+packages = [{include = "microbial_thermodynamics"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+pytest-flake8 = "^1.1.1"
+pytest-mypy = "^0.10.3"
+pytest-mock = "^3.11.1"
+
+
+[tool.poetry.group.devenv.dependencies]
+black = "^23.7.0"
+flake8 = "^6.0.0"
+mypy = "^1.4.1"
+pre-commit = "^3.3.3"
+isort = "^5.12.0"
+flake8-docstrings = "^1.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
