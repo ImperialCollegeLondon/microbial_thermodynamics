@@ -8,7 +8,6 @@ repos:
     rev: "5.12.0"
     hooks:
       - id: isort
-        additional_dependencies: [toml]
   - repo: https://github.com/psf/black
     rev: "23.7.0"
     hooks:
@@ -22,7 +21,6 @@ repos:
     rev: "v1.4.1"
     hooks:
       - id: mypy
-        additional_dependencies: [types-jsonschema, xarray]
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.35.0
     hooks:
