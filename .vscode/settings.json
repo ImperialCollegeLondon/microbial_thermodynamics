@@ -1,5 +1,4 @@
 {
-    "python.linting.flake8Enabled": true,
     "python.linting.mypyEnabled": true,
     "python.linting.enabled": true,
     "python.formatting.provider": "none",
@@ -20,6 +19,10 @@
     },
     "cSpell.words": [],
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter"
-    },
+        "editor.defaultFormatter": null,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": true,
+            "source.organizeImports.ruff": true
+        }
+    }
 }

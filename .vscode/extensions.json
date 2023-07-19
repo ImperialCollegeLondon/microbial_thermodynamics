@@ -7,6 +7,7 @@
         "ms-toolsai.jupyter-keymap",
         "ms-toolsai.jupyter-renderers",
         "ms-vsliveshare.vsliveshare",
-        "stkb.rewrap"
+        "stkb.rewrap",
+        "charliermarsh.ruff"
     ]
 }
