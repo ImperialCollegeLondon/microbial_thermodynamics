@@ -1,6 +1,6 @@
 #forward Euler method to numerically solve a logistic growth model
 #and then plots the solution using matplotlib
-from typing import Callable, List, Tuple
+from typing import Callable
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,7 +20,7 @@ def forward_euler(f: Callable[[float, float], float],
     u0: float, 
     T: float, 
     N: int
-) -> Tuple[List[float], List[float]]:
+) -> tuple[list[float], list[float]]:
     """Solve u’=f(t, u), u(0)=u0, with n steps until t=T."""
     t = np.zeros(N + 1)
     u = np.zeros(N + 1) # u[n] is the solution at time t[n]
