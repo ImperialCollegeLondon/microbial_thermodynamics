@@ -11,9 +11,6 @@ def f(t: float, u: float) -> float:
     R = 1.0
     unext = alpha*(u) * (1-(u/R))
     return unext
-u0 = 0.1
-T = 40
-N = 10
 
 
 def forward_euler(f: Callable[[float, float], float], 
@@ -31,10 +28,15 @@ def forward_euler(f: Callable[[float, float], float],
         u[n + 1] = u[n] + dt * f(t[n], u[n])
     return t, u
     
-t, u = forward_euler(f, u0, T, N)
 
-plt.plot(t, u)
-plt.xlabel('Time')
-plt.ylabel('Population')
-plt.title('Model for logistic growth')
-plt.show()
+def run_and_plot(u0: float = 0.1, T: float = 40, N: int = 10) -> None:
+    """Runs the forward euler equation then plots it"""
+    t, u = forward_euler(f, u0, T, N)
+
+    plt.plot(t, u)
+    plt.xlabel('Time')
+    plt.ylabel('Population')
+    plt.title('Model for logistic growth')
+    plt.show()
+
+run_and_plot()
