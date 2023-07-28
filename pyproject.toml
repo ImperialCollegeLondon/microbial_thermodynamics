@@ -10,6 +10,7 @@ packages = [{include = "microbial_thermodynamics"}]
 python = "^3.10"
 matplotlib = "^3.7.2"
 black = "^23.7.0"
+numpy = "^1.25.1"
 
 
 [tool.poetry.group.test.dependencies]
