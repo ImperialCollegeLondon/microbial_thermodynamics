@@ -19,7 +19,23 @@ def forward_euler(f: Callable[[float, float], float],
     T: float, 
     N: int
 ) -> tuple[list[float], list[float]]:
-    """Solve u’=f(t, u), u(0)=u0, with n steps until t=T."""
+    """Solve u’=f(t, u), u(0)=u0 (in this case the logistic growth model), 
+    with n steps until t=T.
+    Args:
+        f: 
+            The differential equation being solved
+        u0:
+            The initial value or the value of the dependent variable at the initial 
+            time (or initial point) of the ODE
+        T:
+            The maximum time
+        N:
+            The number of time steps used
+    
+    Returns:
+        An array for t and an array for u. These represent an approximated solution to 
+        an ODE.
+    """
     t = np.zeros(N + 1)
     u = np.zeros(N + 1) # u[n] is the solution at time t[n]
     u[0] = u0
