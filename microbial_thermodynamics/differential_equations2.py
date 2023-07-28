@@ -1,5 +1,5 @@
-#forward Euler method to numerically solve a logistic growth model
-#and then plots the solution using matplotlib
+"""forward Euler method to numerically solve a logistic growth model
+and then plots the solution using matplotlib"""
 from typing import Callable
 
 import matplotlib.pyplot as plt
@@ -7,6 +7,7 @@ import numpy as np
 
 
 def f(t: float, u: float) -> float:
+    """The logistic growth model function"""
     alpha = 0.2
     R = 1.0
     unext = alpha*(u) * (1-(u/R))
