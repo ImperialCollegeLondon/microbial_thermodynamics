@@ -55,5 +55,3 @@ def run_and_plot(u0: float = 0.1, T: float = 40, N: int = 10) -> None:
     plt.ylabel('Population')
     plt.title('Model for logistic growth')
     plt.show()
-
-run_and_plot()
