@@ -32,3 +32,20 @@ ruff = "^0.0.278"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+ignore = [
+    "D104",
+    "D107",
+    "D202",
+]
+line-length = 88
+select = [
+    "D",
+    "E",
+    "F",
+    "W",
+]
+
+[tool.ruff.pydocstyle]
+convention = "google"

@@ -1,7 +1,6 @@
 {
     "python.linting.mypyEnabled": true,
     "python.linting.enabled": true,
-    "python.formatting.provider": "none",
     "editor.formatOnSave": true,
     "editor.rulers": [
         88
@@ -24,5 +23,6 @@
             "source.fixAll.ruff": true,
             "source.organizeImports.ruff": true
         }
-    }
+    },
+    "python.formatting.provider": "black"
 }
