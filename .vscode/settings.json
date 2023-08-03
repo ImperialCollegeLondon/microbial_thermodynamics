@@ -18,11 +18,11 @@
     },
     "cSpell.words": [],
     "[python]": {
-        "editor.defaultFormatter": null,
+        "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.codeActionsOnSave": {
             "source.fixAll.ruff": true,
             "source.organizeImports.ruff": true
         }
     },
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "none"
 }
