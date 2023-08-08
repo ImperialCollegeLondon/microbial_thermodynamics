@@ -2,6 +2,15 @@
 
 # Import numpy to handle the vector stuff (call it np for short)
 import numpy as np
+from cell_growth_ODE import (
+    calculate_gam,
+    calculate_lam,
+    calculate_r_star,
+    calculate_time_scale,
+    da,
+    dN,
+    dr,
+)
 
 # This is only imported so that a type hint can be provided
 from numpy.typing import NDArray
@@ -9,66 +18,24 @@ from numpy.typing import NDArray
 # Importing solve_ivp as the specific solver to use this might change in future
 from scipy.integrate import solve_ivp
 
+my_time = 1
+a = 2
+R = 3
+N = 4
 
-# These three functions are just here as examples, they really could be anything
-def da(
-    b: NDArray[np.float32], c: NDArray[np.float32], d: float = 0.5
-) -> NDArray[np.float32]:
-    """Calculate the change in the a variables.
-
-    Args:
-        b: the b variables
-        c: the c variables
-        d: a multiplicative constants
-
-    Returns:
-        The rate of change of the a variables
-    """
-
-    # Multiplication can be done using vectors, not just floats. This is element wise,
-    # i.e. the first element in b is multiplied by the first element in c, and this
-    # results in a vector.
-    return b * c * d
-
-
-def db(
-    a: NDArray[np.float32], c: NDArray[np.float32], e: float = -0.5
-) -> NDArray[np.float32]:
-    """Calculate the change in the b variables.
-
-    Args:
-        a: the a variables
-        c: the c variables
-        e: a multiplicative constants
-
-    Returns:
-        The rate of change of the b variables
-    """
-
-    return a * c * e
-
-
-def dc(
-    a: NDArray[np.float32], b: NDArray[np.float32], f: float = 1.0
-) -> NDArray[np.float32]:
-    """Calculate the change in the c variables.
-
-    Args:
-        a: the a variables
-        b: the b variables
-        f: a multiplicative constants
-
-    Returns:
-        The rate of change of the c variables
-    """
-
-    return a * b * f
+calculate_time_scale(a, R)
+calculate_r_star(a)
+calculate_lam(a, R)
+calculate_gam(a)
+dN(my_time, N, a, R)
+dr(my_time, a, R)
+da(my_time, a, R)
 
 
 def full_equation_set(
     t: float,
+    N: NDArray[np.float32],
     y: NDArray[np.float32],
-    N: int,
 ) -> NDArray[np.float32]:
     """Function that combines all equations together into one set that can be simulated.
 
@@ -86,12 +53,14 @@ def full_equation_set(
 
     # Extract the relevant values from the vector of values y, then supply them to the
     # relevant functions to calculate the change in each variable set
-    change_in_a = da(b=y[N : 2 * N], c=y[2 * N : 3 * N])
-    change_in_b = db(a=y[0:N], c=y[2 * N : 3 * N])
-    change_in_c = dc(a=y[0:N], b=y[N : 2 * N])
+    change_in_N = dN(
+        my_time=y[0:N], N=y[3 * N : 4 * N], a=y[N : 2 * N], R=y[2 * N : 3 * N]
+    )
+    change_in_r = dr(my_time=y[0:N], a=y[N : 2 * N], R=y[2 * N : 3 * N])
+    change_in_a = da(my_time=y[0:N], a=y[N : 2 * N], R=y[2 * N : 3 * N])
 
     # Then combine these changes into a single vector and return that
-    return np.concatenate((change_in_a, change_in_b, change_in_c))
+    return np.concatenate((change_in_N, change_in_r, change_in_a))
 
 
 def integrate() -> NDArray[np.float32]:
@@ -110,12 +79,12 @@ def integrate() -> NDArray[np.float32]:
     N = 2
 
     # This means that each variable has 2 initial conditions
-    a0 = [23.0, 2.3]
-    b0 = [33.1, 3.0]
-    c0 = [17.1, 1.7]
+    N0 = [23.0, 2.3]
+    r0 = [33.1, 3.0]
+    a0 = [17.1, 1.7]
 
     # Construct vector of initial values y0
-    y0 = np.concatenate((a0, b0, c0))
+    y0 = np.concatenate((N0, r0, a0))
 
     # Carry out simulation, by supplying the set of equations, time span, initial
     # condition, and any extra arguments
