@@ -18,23 +18,12 @@ from numpy.typing import NDArray
 # Importing solve_ivp as the specific solver to use this might change in future
 from scipy.integrate import solve_ivp
 
-my_time = 1
-a = 2
-R = 3
-N = 4
-
-calculate_time_scale(a, R)
-calculate_r_star(a)
-calculate_lam(a, R)
-calculate_gam(a)
-dN(my_time, N, a, R)
-dr(my_time, a, R)
-da(my_time, a, R)
-
 
 def full_equation_set(
     t: float,
     N: NDArray[np.float32],
+    a: NDArray[np.float32],
+    R: NDArray[np.float32],
     y: NDArray[np.float32],
 ) -> NDArray[np.float32]:
     """Function that combines all equations together into one set that can be simulated.
@@ -45,7 +34,9 @@ def full_equation_set(
             integrated.
         pools: An array containing all soil pools in a single vector
         N: Number of sets of equations that we are integrating
-        y: does something
+        a: internal energy (ATP) concentration
+        R: Ribosome fraction
+        y: An array of all changes of the three equations.
 
     Returns:
         The solution for all equations in the set
@@ -53,11 +44,14 @@ def full_equation_set(
 
     # Extract the relevant values from the vector of values y, then supply them to the
     # relevant functions to calculate the change in each variable set
-    change_in_N = dN(
-        my_time=y[0:N], N=y[3 * N : 4 * N], a=y[N : 2 * N], R=y[2 * N : 3 * N]
-    )
-    change_in_r = dr(my_time=y[0:N], a=y[N : 2 * N], R=y[2 * N : 3 * N])
-    change_in_a = da(my_time=y[0:N], a=y[N : 2 * N], R=y[2 * N : 3 * N])
+    calculate_time_scale(a, R)
+    calculate_r_star(a)
+    calculate_lam(a, R)
+    calculate_gam(a)
+
+    change_in_N = dN(t, N=y[0:N], a=y[3 * N : 4 * N], R=y[N : 2 * N])
+    change_in_r = dr(t, a=y[N : 2 * N], R=y[2 * N : 3 * N])
+    change_in_a = da(t, a=y[N : 2 * N], R=y[2 * N : 3 * N])
 
     # Then combine these changes into a single vector and return that
     return np.concatenate((change_in_N, change_in_r, change_in_a))
