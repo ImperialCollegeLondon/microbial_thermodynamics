@@ -24,5 +24,4 @@
             "source.organizeImports.ruff": true
         }
     },
-    "python.formatting.provider": "black"
 }
