@@ -1,6 +1,7 @@
 """A script to demonstrate how to use scipy to integrate."""
 
 # Import numpy to handle the vector stuff (call it np for short)
+import matplotlib.pyplot as plt
 import numpy as np
 from cell_growth_ODE import da, dN, dr
 
@@ -76,7 +77,6 @@ def integrate() -> NDArray[np.float32]:
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0))
-    print(y0)
     # Carry out simulation, by supplying the set of equations, time span, initial
     # condition, and any extra arguments
     output = solve_ivp(
@@ -85,5 +85,45 @@ def integrate() -> NDArray[np.float32]:
         y0,
         args=(number_of_species,),
     )
-
     return output
+
+
+def run_and_plot_population() -> None:
+    """Runs the integrate function and plots population against time."""
+    plot_time = integrate().t
+    species_1_population = integrate().y[0]
+    species_2_population = integrate().y[1]
+    plt.plot(plot_time, species_1_population, label="species 1")
+    plt.plot(plot_time, species_2_population, label="species 2")
+    plt.xlabel("Time")
+    plt.ylabel("Population")
+    plt.title("Population change")
+    plt.show()
+
+
+def run_and_plot_r() -> None:
+    """Runs the integrate function and plots ribosome fraction against time."""
+    plot_time = integrate().t
+    species_1_r = integrate().y[2]
+    species_2_r = integrate().y[3]
+    plt.plot(plot_time, species_1_r, label="species 1")
+    plt.plot(plot_time, species_2_r, label="species 2")
+    plt.xlabel("Time")
+    plt.ylabel("Ribosome fraction")
+    plt.title("Ribosome fraction change")
+    plt.show()
+
+
+def run_and_plot_a() -> None:
+    """Runs the integrate function and plots internal energy (ATP) production against
+    time.
+    """  # noqa: D205
+    plot_time = integrate().t
+    species_1_a = integrate().y[4]
+    species_2_a = integrate().y[5]
+    plt.plot(plot_time, species_1_a, label="species 1")
+    plt.plot(plot_time, species_2_a, label="species 2")
+    plt.xlabel("Time")
+    plt.ylabel("Internal energy (ATP) production")
+    plt.title("Internal energy (ATP) production change")
+    plt.show()
