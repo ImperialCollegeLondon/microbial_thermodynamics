@@ -3,13 +3,14 @@
 # Import numpy to handle the vector stuff (call it np for short)
 import matplotlib.pyplot as plt
 import numpy as np
-from cell_growth_ODE import da, dN, dr
 
 # This is only imported so that a type hint can be provided
 from numpy.typing import NDArray
 
 # Importing solve_ivp as the specific solver to use this might change in future
 from scipy.integrate import solve_ivp
+
+from microbial_thermodynamics.cell_growth_ODE import da, dN, dr
 
 
 def full_equation_set(
@@ -85,6 +86,9 @@ def integrate() -> NDArray[np.float32]:
         y0,
         args=(number_of_species,),
     )
+    print(t_span)
+    print(y0)
+    print(number_of_species)
     return output
 
 
@@ -115,9 +119,7 @@ def run_and_plot_r() -> None:
 
 
 def run_and_plot_a() -> None:
-    """Runs the integrate function and plots internal energy (ATP) production against
-    time.
-    """  # noqa: D205
+    """Integrate set of equations and plot internal energy (ATP) against time."""
     plot_time = integrate().t
     species_1_a = integrate().y[4]
     species_2_a = integrate().y[5]
@@ -127,3 +129,6 @@ def run_and_plot_a() -> None:
     plt.ylabel("Internal energy (ATP) production")
     plt.title("Internal energy (ATP) production change")
     plt.show()
+
+
+integrate()
