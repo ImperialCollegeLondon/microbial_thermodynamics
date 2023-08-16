@@ -112,6 +112,108 @@ def da(
     return uda
 
 
+# metabolic functions
+
+
+def calculate_kappa(
+    Gatp: float = 75,
+    G0: float = 1.5e5,
+    reaction_energy: float = 1 / 3,
+    R: float = 8.314,
+    T: float = 293.15,
+) -> float:
+    """Calculates the kappa constant."""
+    u = np.exp((-G0 - reaction_energy * Gatp) / R * T)
+    return u
+
+
+def calculate_theta(s: float, w: float) -> float:
+    """A thermodynamic factor that stops a reaction at equilibrium.
+
+    Args:
+     s: substrate concentration
+     w: waste product concentration
+     kappa: species equilibrium constant.
+    """
+    kappa = calculate_kappa()
+    u = (w / s) / kappa
+    return u
+
+
+def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
+    """Calculates enzyme copy number."""
+    u = m * (v - R - Q)
+    return u
+
+
+def q(
+    Gatp: float,
+    R: float,
+    s: float,
+    w: float,
+    ka: float = 10,
+    ks: float = 1.375e-3,
+    ra: float = 10,
+) -> float:
+    """Calculates reaction rate."""
+    E = calculate_E(1, R)
+    calculate_kappa(Gatp)
+    theta = calculate_theta(s, w)
+    u = (ka * E * s * (1 - theta)) / (ks + s * (1 + ra * theta))
+    return u
+
+
+def j(
+    Gatp: float, R: float, s: float, w: float, reaction_energy: float = 1 / 3
+) -> float:
+    """Calculates rate of ATP production in a species."""
+    u = reaction_energy * q(Gatp, R, s, w)
+    return u
+
+
+def calculate_produced(Gatp: float, R: float, s: float, w: float) -> float:
+    """Calculates rate a metabolite is produced per cell."""
+    u = q(Gatp, R, s, w)
+    return u
+
+
+def calculate_consumed(Gatp: float, R: float, s: float, w: float) -> float:
+    """Calculates rate a metabolite is consumed per cell."""
+    u = q(Gatp, R, s, w)
+    return u
+
+
+# below is the code i could not get working
+"""
+def calculate_sum_of_species(num_species: float = 2, N: float)-> float:
+    produced = calculate_produced(Gatp, R, s, w)
+    consumed = calculate_consumed(Gatp, R, s, w)
+    for i in range num_species:
+        u =+ (produced - consumed)*N
+    return u
+def dc(c: float,
+    k: float,
+    kron_d: float,
+    p: float,
+    produced: float,
+    consumed: float)
+    -> float:
+    Calculates the change in metabolite concentration.
+    Args:
+     c: metabolite concentration
+     k: substrate supply rate
+     kron_d: kroneker delta
+     p: metabolite dilution rate
+     produced: rate a metabolite is produced per cell
+     consumed: rate a metabolite is consumed per cell
+
+    sum_species =
+    produced =
+    consumed =
+    u = k*kron_d - p*c + (produced - consumed)*
+"""
+
+
 def forward_euler(
     dN: Callable[[float, float, float, float], float],
     dr: Callable[[float, float, float], float],
