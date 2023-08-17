@@ -116,9 +116,9 @@ def da(
 
 
 def calculate_kappa(
-    Gatp: float = 75,
+    reaction_energy: float,
+    Gatp: float = 75000,
     G0: float = 1.5e5,
-    reaction_energy: float = 1 / 3,
     R: float = 8.314,
     T: float = 293.15,
 ) -> float:
@@ -133,21 +133,26 @@ def calculate_theta(s: float, w: float) -> float:
     Args:
      s: substrate concentration
      w: waste product concentration
-     kappa: species equilibrium constant.
     """
-    kappa = calculate_kappa()
+    kappa = calculate_kappa(3.0)
     u = (w / s) / kappa
     return u
 
 
 def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
-    """Calculates enzyme copy number."""
+    """Calculates enzyme copy number.
+
+    Args:
+     v: the ith species' proportional expression level for reaction alpha
+     R: Ribosome fraction
+     Q: Housekeeping proteome fraction
+     m: Cell mass
+    """
     u = m * (v - R - Q)
     return u
 
 
 def q(
-    Gatp: float,
     R: float,
     s: float,
     w: float,
@@ -157,15 +162,12 @@ def q(
 ) -> float:
     """Calculates reaction rate."""
     E = calculate_E(1, R)
-    calculate_kappa(Gatp)
     theta = calculate_theta(s, w)
     u = (ka * E * s * (1 - theta)) / (ks + s * (1 + ra * theta))
     return u
 
 
-def j(
-    Gatp: float, R: float, s: float, w: float, reaction_energy: float = 1 / 3
-) -> float:
+def j(Gatp: float, R: float, s: float, w: float, reaction_energy: float) -> float:
     """Calculates rate of ATP production in a species."""
     u = reaction_energy * q(Gatp, R, s, w)
     return u
