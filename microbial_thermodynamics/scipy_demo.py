@@ -10,13 +10,11 @@ from numpy.typing import NDArray
 # Importing solve_ivp as the specific solver to use this might change in future
 from scipy.integrate import solve_ivp
 
-from microbial_thermodynamics.cell_growth_ODE import da, dN, dr
+from microbial_thermodynamics.cell_growth_ODE import da, dc, dN, dr
 
 
 def full_equation_set(
-    t: float,
-    y: NDArray[np.float32],
-    number_of_species: int,
+    t: float, y: NDArray[np.float32], number_of_species: int, reaction_energies: float
 ) -> NDArray[np.float32]:
     """Function that combines all equations together into one set that can be simulated.
 
@@ -27,6 +25,7 @@ def full_equation_set(
         pools: An array containing all soil pools in a single vector
         number_of_species: Number of sets of equations that we are integrating
         y: An array of all changes of the three equations.
+        reaction_energies: the ATP generated for each species for each reaction alpha
 
     Returns:
         The solution for all equations in the set
@@ -50,10 +49,20 @@ def full_equation_set(
         t,
         a=y[2 * number_of_species : 3 * number_of_species],
         R=y[number_of_species : 2 * number_of_species],
+        s=y[6 * number_of_species : 7 * number_of_species],
+        w=y[7 * number_of_species : 8 * number_of_species],
+        reaction_energy=y[4 * number_of_species : 5 * number_of_species],
+        v=y[5 * number_of_species : 6 * number_of_species],
     )
-
+    change_in_c = dc(
+        c=y[3 * number_of_species : 4 * number_of_species],
+        reaction_energy=y[4 * number_of_species : 5 * number_of_species],
+        N=y[0:number_of_species],
+        R=y[number_of_species : 2 * number_of_species],
+        v=y[5 * number_of_species : 6 * number_of_species],
+    )
     # Then combine these changes into a single vector and return that
-    return np.concatenate((change_in_N, change_in_r, change_in_a))
+    return np.concatenate((change_in_N, change_in_r, change_in_a, change_in_c))
 
 
 def integrate() -> NDArray[np.float32]:
@@ -78,13 +87,14 @@ def integrate() -> NDArray[np.float32]:
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0))
+    reaction_energies = [1.0, 2.0]
     # Carry out simulation, by supplying the set of equations, time span, initial
     # condition, and any extra arguments
     output = solve_ivp(
         full_equation_set,
         t_span,
         y0,
-        args=(number_of_species,),
+        args=(number_of_species, reaction_energies),
     )
     print(t_span)
     print(y0)

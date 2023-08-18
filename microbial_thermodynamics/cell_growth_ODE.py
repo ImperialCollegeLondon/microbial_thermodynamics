@@ -9,8 +9,8 @@ fraction). Should I find values for gam and R or write functions.
 
 from typing import Callable
 
-import matplotlib.pyplot as plt
 import numpy as np
+from numpy.typing import NDArray
 
 
 def calculate_gam(a: float, ym: float = 1260.0, y_half: float = 5e8) -> float:
@@ -68,7 +68,7 @@ def dN(tN: float, N: float, a: float, R: float, d: float = 0.1) -> float:
 
     Args:
      tN: time
-     lam: species’ growth rate
+     lam: species' growth rate
      N: current population
      a: internal energy (ATP) concentration
      d: rate of biomass loss.
@@ -94,51 +94,6 @@ def dr(tr: float, a: float, R: float) -> float:
     return udr
 
 
-def da(
-    ta: float, a: float, R: float, j: float = 2e5, chi: float = 29, m: float = 1e8
-) -> float:
-    """Rate of change of internal energy (ATP) production.
-
-    Args:
-    ta: time
-    a: internal energy (ATP) concentration
-    R: Ribosome fraction
-    j: ATP production rate
-    chi: is ATP use per elongation step
-    m: total mass of the cell (in units of amino acids)
-    """
-    lam = calculate_lam(a, R)
-    uda = j - chi * m * lam - a * lam
-    return uda
-
-
-# metabolic functions
-
-
-def calculate_kappa(
-    reaction_energy: float,
-    Gatp: float = 75000,
-    G0: float = 1.5e5,
-    R: float = 8.314,
-    T: float = 293.15,
-) -> float:
-    """Calculates the kappa constant."""
-    u = np.exp((-G0 - reaction_energy * Gatp) / R * T)
-    return u
-
-
-def calculate_theta(s: float, w: float) -> float:
-    """A thermodynamic factor that stops a reaction at equilibrium.
-
-    Args:
-     s: substrate concentration
-     w: waste product concentration
-    """
-    kappa = calculate_kappa(3.0)
-    u = (w / s) / kappa
-    return u
-
-
 def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
     """Calculates enzyme copy number.
 
@@ -156,64 +111,137 @@ def q(
     R: float,
     s: float,
     w: float,
+    reaction_energy: float,
+    v: float,
     ka: float = 10,
     ks: float = 1.375e-3,
     ra: float = 10,
 ) -> float:
-    """Calculates reaction rate."""
-    E = calculate_E(1, R)
-    theta = calculate_theta(s, w)
+    """Calculates reaction rate.
+
+    Args:
+     R: Ribosome fraction
+     s: substrate concentration
+     w: waste product concentration
+     reaction_energy: the ATP generated for each species for each reaction alpha
+     v: the ith species' proportional expression level for reaction alpha
+     ka: the maximum forward rate for reaction alpha for the ith species
+     ks: substrate half saturation constant
+     ra: reversibility factor for reaction alpha
+    """
+    E = calculate_E(v, R)
+    theta = calculate_theta(reaction_energy, s, w)
     u = (ka * E * s * (1 - theta)) / (ks + s * (1 + ra * theta))
     return u
 
 
-def j(Gatp: float, R: float, s: float, w: float, reaction_energy: float) -> float:
-    """Calculates rate of ATP production in a species."""
-    u = reaction_energy * q(Gatp, R, s, w)
+def calculate_j(
+    R: float, s: float, w: float, v: float, reaction_energy: float, Gatp: float = 75000
+) -> float:
+    """Calculates rate of ATP production in a species.
+
+    Args:
+     R: Ribosome fraction
+     s: substrate concentration
+     w: waste product concentration
+     reaction_energy: the ATP generated for each species for each reaction alpha
+     v: the ith species' proportional expression level for reaction alpha
+     Gatp: ATP free energy
+    """
+    u = reaction_energy * q(R, s, w, reaction_energy, v)
     return u
 
 
-def calculate_produced(Gatp: float, R: float, s: float, w: float) -> float:
-    """Calculates rate a metabolite is produced per cell."""
-    u = q(Gatp, R, s, w)
+def da(
+    ta: float,
+    a: float,
+    R: float,
+    s: float,
+    w: float,
+    reaction_energy: float,
+    v: float,
+    chi: float = 29,
+    m: float = 1e8,
+) -> float:
+    """Rate of change of internal energy (ATP) production.
+
+    Args:
+    ta: time
+    a: internal energy (ATP) concentration
+    R: Ribosome fraction
+    s: substrate concentration
+    w: waste product concentration
+    reaction_energy: the ATP generated for each species for each reaction alpha
+    v: the ith species' proportional expression level for reaction alpha
+    chi: is ATP use per elongation step
+    m: total mass of the cell (in units of amino acids)
+    """
+    j = calculate_j(R, s, w, v, reaction_energy)
+    lam = calculate_lam(a, R)
+    uda = j - chi * m * lam - a * lam
+    return uda
+
+
+def calculate_kappa(
+    reaction_energy: float,
+    Gatp: float = 75000,
+    G0: float = 1.5e5,
+    R: float = 8.314,
+    T: float = 293.15,
+) -> float:
+    """Calculates the kappa constant.
+
+    Args:
+     reaction_energy: the ATP generated for each species for each reaction alpha
+     Gatp: ATP free energy
+     G0: the standard Gibbs free-energy change when one mole of reaction alpha occurs
+     R: the gas constant
+     T: temperature
+    """
+    u = np.exp((-G0 - reaction_energy * Gatp) / R * T)
     return u
 
 
-def calculate_consumed(Gatp: float, R: float, s: float, w: float) -> float:
-    """Calculates rate a metabolite is consumed per cell."""
-    u = q(Gatp, R, s, w)
+def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
+    """A thermodynamic factor that stops a reaction at equilibrium.
+
+    Args:
+     reaction_energy: the ATP generated for each species for each reaction alpha
+     s: substrate concentration
+     w: waste product concentration
+    """
+    kappa = calculate_kappa(reaction_energy)
+    u = (w / s) / kappa
     return u
 
 
-# below is the code i could not get working
-"""
-def calculate_sum_of_species(num_species: float = 2, N: float)-> float:
-    produced = calculate_produced(Gatp, R, s, w)
-    consumed = calculate_consumed(Gatp, R, s, w)
-    for i in range num_species:
-        u =+ (produced - consumed)*N
-    return u
-def dc(c: float,
-    k: float,
-    kron_d: float,
-    p: float,
-    produced: float,
-    consumed: float)
-    -> float:
-    Calculates the change in metabolite concentration.
+def dc(
+    c: NDArray[np.float32],
+    reaction_energy: float,
+    N: float,
+    R: float,
+    v: float,
+    k: float = 3.3e-7,
+    p: float = 6e-5,
+) -> float:
+    """Calculates the change in metabolite concentration.
+
     Args:
      c: metabolite concentration
+     reaction_energy: the ATP generated for each species for each reaction alpha
+     N: current population
+     R: Ribosome fraction
+     v: the ith species' proportional expression level for reaction alpha
      k: substrate supply rate
-     kron_d: kroneker delta
      p: metabolite dilution rate
-     produced: rate a metabolite is produced per cell
-     consumed: rate a metabolite is consumed per cell
-
-    sum_species =
-    produced =
-    consumed =
-    u = k*kron_d - p*c + (produced - consumed)*
-"""
+    """
+    c_changes = np.zeros(len(c))
+    for ind, _ in enumerate(c):
+        if ind == 0:
+            c_changes[ind] = k - p * c[ind] - N * q(R, c[0], c[1], reaction_energy, v)
+        else:
+            c_changes[ind] = -p * c[ind] + N * q(R, c[0], c[1], reaction_energy, v)
+    return c_changes
 
 
 def forward_euler(
@@ -259,8 +287,9 @@ def forward_euler(
     return t, u_N, u_a, u_r
 
 
+"""
 def run_and_plot_N(u0: float = 0.1, T: float = 40, N: int = 10) -> None:
-    """Runs the forward euler equation then plots it."""
+    Runs the forward euler equation then plots it.
     t, u_N, u_a, u_r = forward_euler(dN, dr, da, u0, T, N)
 
     plt.plot(t, u_N)
@@ -268,3 +297,4 @@ def run_and_plot_N(u0: float = 0.1, T: float = 40, N: int = 10) -> None:
     plt.ylabel("Population")
     plt.title("population abundance")
     plt.show()
+"""
