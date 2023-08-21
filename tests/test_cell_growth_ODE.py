@@ -141,6 +141,150 @@ def test_dr():
     assert actual_dr == pytest.approx(expected_dr)
 
 
+def test_calculate_E():
+    """Test Calculation of enzyme copy number."""
+    from microbial_thermodynamics.cell_growth_ODE import calculate_E
+
+    # Set of values to test
+    v = np.array([1e4, 1e6, 1e7, 1e8])  # not sure what realistic values would be
+    R = np.array([0.12, 0.17, 0.25, 0.3])
+
+    # Set of expected values to test against
+    expected_E = [
+        999942999999.9999,
+        99999938000000.0,
+        999999930000000.1,
+        9999999925000000.0,
+    ]
+
+    # Calculate enzyme copy number values using the function
+    actual_E = calculate_E(v, R)
+
+    # Check that actual and expected values match
+    assert actual_E == pytest.approx(expected_E)
+
+
+def test_calculate_kappa():
+    """Test calculation of the kappa constant."""
+    from microbial_thermodynamics.cell_growth_ODE import calculate_kappa
+
+    # Set of values to test
+    reaction_energy = np.array(
+        [-1.500000001e5, -1.49999999999999e5, -1.5000000002e5, -1.5e5]
+    )
+
+    # Set of expected values to test against
+    expected_kappa = [
+        7.055676901318255e114,
+        0.9973866227631132,
+        9.326408248469765e22,
+        1.0,
+    ]
+
+    # Calculate kappa values using the function
+    actual_kappa = calculate_kappa(reaction_energy)
+
+    # Check that actual and expected values match
+    assert actual_kappa == pytest.approx(expected_kappa)
+
+
+def test_calculate_theta():
+    """Test calculation of a thermodynamic factor that stops reaction at equilibrium."""
+    from microbial_thermodynamics.cell_growth_ODE import calculate_theta
+
+    # Set of values to test
+    s = np.array([2e3, 2e4, 2e5, 2e6])
+    w = np.array([3e3, 3e4, 3e5, 3e6])
+    reaction_energy = np.array(
+        [-1.500000001e5, -1.49999999999999e5, -1.5000000002e5, -1.5e5]
+    )
+    # Set of expected values to test against
+    expected_theta = [
+        2.1259476886189983e-115,
+        1.503930337309388,
+        1.6083361997863575e-23,
+        1.5,
+    ]
+
+    # Calculate thermodynamic factor values using the function
+    actual_theta = calculate_theta(reaction_energy, s, w)
+
+    # Check that actual and expected values match
+    assert actual_theta == pytest.approx(expected_theta)
+
+
+def test_q():
+    """Test reaction rate calculation."""
+    from microbial_thermodynamics.cell_growth_ODE import q
+
+    # Set of values to test
+    R = np.array([0.12, 0.17, 0.25, 0.3])
+    s = np.array([2e3, 2e4, 2e5, 2e6])
+    w = np.array([3e3, 3e4, 3e5, 3e6])
+    reaction_energy = np.array(
+        [-1.500000001e5, -1.49999999999999e5, -1.5000000002e5, -1.5e5]
+    )
+    v = np.array([1e4, 1e6, 1e7, 1e8])
+
+    # Set of expected values to test against
+    expected_q = [
+        9999423125396.6,
+        -31418448232478.047,
+        9999999231250008.0,
+        -3124999976428222.5,
+    ]
+
+    # Calculate reaction rate values using the function
+    actual_q = q(R, s, w, reaction_energy, v)
+
+    # Check that actual and expected values match
+    assert actual_q == pytest.approx(expected_q)
+
+
+def test_calculate_j():
+    """Tests calculation of rate of ATP production in a species."""
+    from microbial_thermodynamics.cell_growth_ODE import calculate_j
+
+    # Set of values to test
+    R = np.array([0.12, 0.17, 0.25, 0.3])
+    s = np.array([2e3, 2e4, 2e5, 2e6])
+    w = np.array([3e3, 3e4, 3e5, 3e6])
+    v = np.array([1e4, 1e6, 1e7, 1e8])
+    reaction_energy = np.array(
+        [-1.500000001e5, -1.49999999999999e5, -1.5000000002e5, -1.5e5]
+    )
+
+    # Set of expected values to test against
+    expected_j = [
+        -1.4999134698094323e18,
+        4.712767234871676e18,
+        -1.4999998848875013e21,
+        4.687499964642334e20,
+    ]
+
+    # Calculate change of ATP production in a species values using the function
+    actual_j = calculate_j(R, s, w, v, reaction_energy)
+
+    # Check that actual and expected values match
+    assert actual_j == pytest.approx(expected_j)
+
+
+"""
+def test_dc():
+    Tests calculation of change in metabolite concentration.
+    from microbial_thermodynamics.cell_growth_ODE import dc
+
+    # Set of values to test
+    c = np.array([12,23,24,35])
+    reaction_energy = np.array(
+        [-1.500000001e5, -1.49999999999999e5, -1.5000000002e5, -1.5e5]
+    )
+    N = np.array([2, 5, 10, 23])
+    R = np.array([0.12, 0.17, 0.25, 0.3])
+    v = np.array([1e4, 1e6, 1e7, 1e8])
+"""
+
+
 def test_da():
     """Test calculation of rate of change of internal energy (ATP) production."""
     from microbial_thermodynamics.cell_growth_ODE import da

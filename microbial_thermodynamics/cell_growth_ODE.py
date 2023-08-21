@@ -107,6 +107,26 @@ def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
     return u
 
 
+def calculate_kappa(
+    reaction_energy: float,
+    Gatp: float = 75000,
+    G0: float = 1.5e5,
+    R: float = 8.314,
+    T: float = 293.15,
+) -> float:
+    """Calculates the kappa constant.
+
+    Args:
+     reaction_energy: the ATP generated for each species for each reaction alpha
+     Gatp: ATP free energy
+     G0: the standard Gibbs free-energy change when one mole of reaction alpha occurs
+     R: the gas constant
+     T: temperature
+    """
+    u = np.exp((((-G0) - reaction_energy) * Gatp) / R * T)
+    return u
+
+
 def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
     """A thermodynamic factor that stops a reaction at equilibrium.
 
@@ -193,26 +213,6 @@ def da(
     lam = calculate_lam(a, R)
     uda = j - chi * m * lam - a * lam
     return uda
-
-
-def calculate_kappa(
-    reaction_energy: float,
-    Gatp: float = 75000,
-    G0: float = 1.5e5,
-    R: float = 8.314,
-    T: float = 293.15,
-) -> float:
-    """Calculates the kappa constant.
-
-    Args:
-     reaction_energy: the ATP generated for each species for each reaction alpha
-     Gatp: ATP free energy
-     G0: the standard Gibbs free-energy change when one mole of reaction alpha occurs
-     R: the gas constant
-     T: temperature
-    """
-    u = np.exp((-G0 - reaction_energy * Gatp) / R * T)
-    return u
 
 
 def dc(
