@@ -107,6 +107,19 @@ def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
     return u
 
 
+def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
+    """A thermodynamic factor that stops a reaction at equilibrium.
+
+    Args:
+     reaction_energy: the ATP generated for each species for each reaction alpha
+     s: substrate concentration
+     w: waste product concentration
+    """
+    kappa = calculate_kappa(reaction_energy)
+    u = (w / s) / kappa
+    return u
+
+
 def q(
     R: float,
     s: float,
@@ -199,19 +212,6 @@ def calculate_kappa(
      T: temperature
     """
     u = np.exp((-G0 - reaction_energy * Gatp) / R * T)
-    return u
-
-
-def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
-    """A thermodynamic factor that stops a reaction at equilibrium.
-
-    Args:
-     reaction_energy: the ATP generated for each species for each reaction alpha
-     s: substrate concentration
-     w: waste product concentration
-    """
-    kappa = calculate_kappa(reaction_energy)
-    u = (w / s) / kappa
     return u
 
 

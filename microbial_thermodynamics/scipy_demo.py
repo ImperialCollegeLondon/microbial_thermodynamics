@@ -51,12 +51,12 @@ def full_equation_set(
         R=y[number_of_species : 2 * number_of_species],
         s=y[6 * number_of_species : 7 * number_of_species],
         w=y[7 * number_of_species : 8 * number_of_species],
-        reaction_energy=y[4 * number_of_species : 5 * number_of_species],
+        reaction_energy=reaction_energies,
         v=y[5 * number_of_species : 6 * number_of_species],
     )
     change_in_c = dc(
         c=y[3 * number_of_species : 4 * number_of_species],
-        reaction_energy=y[4 * number_of_species : 5 * number_of_species],
+        reaction_energy=reaction_energies,
         N=y[0:number_of_species],
         R=y[number_of_species : 2 * number_of_species],
         v=y[5 * number_of_species : 6 * number_of_species],
@@ -84,17 +84,15 @@ def integrate() -> NDArray[np.float32]:
     N0 = [23.0, 2.3]
     r0 = [0.3, 0.3]
     a0 = [1e6, 1e6]
+    c0 = [0, 0]
 
     # Construct vector of initial values y0
-    y0 = np.concatenate((N0, r0, a0))
+    y0 = np.concatenate((N0, r0, a0, c0))
     reaction_energies = [1.0, 2.0]
     # Carry out simulation, by supplying the set of equations, time span, initial
     # condition, and any extra arguments
     output = solve_ivp(
-        full_equation_set,
-        t_span,
-        y0,
-        args=(number_of_species, reaction_energies),
+        full_equation_set, t_span, y0, args=(number_of_species, reaction_energies)
     )
     print(t_span)
     print(y0)
