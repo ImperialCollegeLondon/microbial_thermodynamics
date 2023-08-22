@@ -88,7 +88,7 @@ def integrate() -> NDArray[np.float32]:
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0, c0))
-    reaction_energies = [1.0, 2.0]
+    reaction_energies = np.array([1.0, 1.0])
     # Carry out simulation, by supplying the set of equations, time span, initial
     # condition, and any extra arguments
     output = solve_ivp(
