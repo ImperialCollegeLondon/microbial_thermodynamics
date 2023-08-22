@@ -145,7 +145,7 @@ def q(
     s: float,
     w: float,
     reaction_energy: float,
-    v: float,
+    v: NDArray[np.float32],
     ka: float = 10,
     ks: float = 1.375e-3,
     ra: float = 10,
@@ -169,7 +169,12 @@ def q(
 
 
 def calculate_j(
-    R: float, s: float, w: float, v: float, reaction_energy: float, Gatp: float = 75000
+    R: float,
+    s: float,
+    w: float,
+    v: NDArray[np.float32],
+    reaction_energy: float,
+    Gatp: float = 75000,
 ) -> float:
     """Calculates rate of ATP production in a species.
 
@@ -192,7 +197,7 @@ def da(
     s: float,
     w: float,
     reaction_energy: float,
-    v: float,
+    v: NDArray[np.float32],
     chi: float = 29,
     m: float = 1e8,
 ) -> float:
@@ -220,7 +225,7 @@ def dc(
     reaction_energy: float,
     N: float,
     R: float,
-    v: float,
+    v: NDArray[np.float32],
     k: float = 3.3e-7,
     p: float = 6e-5,
 ) -> float:

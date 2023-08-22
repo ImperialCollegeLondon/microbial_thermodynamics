@@ -52,14 +52,14 @@ def full_equation_set(
         s=y[3 * number_of_species],
         w=y[3 * number_of_species + 1],
         reaction_energy=reaction_energies,
-        v=y[1.0, 1.0],
+        v=[1.0, 2.0],
     )
     change_in_c = dc(
         c=y[3 * number_of_species : 4 * number_of_species],
         reaction_energy=reaction_energies,
         N=y[0:number_of_species],
         R=y[number_of_species : 2 * number_of_species],
-        v=y[1.0, 1.0],
+        v=[1.0, 2.0],
     )
     # Then combine these changes into a single vector and return that
     return np.concatenate((change_in_N, change_in_r, change_in_a, change_in_c))
@@ -84,7 +84,7 @@ def integrate() -> NDArray[np.float32]:
     N0 = [23.0, 2.3]
     r0 = [0.3, 0.3]
     a0 = [1e6, 1e6]
-    c0 = [0, 0]
+    c0 = [0.5, 0.5]
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0, c0))
