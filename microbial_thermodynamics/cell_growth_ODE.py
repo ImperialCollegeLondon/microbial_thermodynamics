@@ -108,7 +108,7 @@ def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
 
 
 def calculate_kappa(
-    reaction_energy: float,
+    reaction_energy: NDArray[np.float32],
     Gatp: float = 75000,
     G0: float = 1.5e5,
     R: float = 8.314,
@@ -127,7 +127,7 @@ def calculate_kappa(
     return u
 
 
-def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
+def calculate_theta(reaction_energy: NDArray[np.float32], s: float, w: float) -> float:
     """A thermodynamic factor that stops a reaction at equilibrium.
 
     Args:
@@ -144,7 +144,7 @@ def q(
     R: float,
     s: float,
     w: float,
-    reaction_energy: float,
+    reaction_energy: NDArray[np.float32],
     v: NDArray[np.float32],
     ka: float = 10,
     ks: float = 1.375e-3,
@@ -173,7 +173,7 @@ def calculate_j(
     s: float,
     w: float,
     v: NDArray[np.float32],
-    reaction_energy: float,
+    reaction_energy: NDArray[np.float32],
     Gatp: float = 75000,
 ) -> float:
     """Calculates rate of ATP production in a species.
@@ -196,7 +196,7 @@ def da(
     R: float,
     s: float,
     w: float,
-    reaction_energy: float,
+    reaction_energy: NDArray[np.float32],
     v: NDArray[np.float32],
     chi: float = 29,
     m: float = 1e8,
@@ -222,7 +222,7 @@ def da(
 
 def dc(
     c: NDArray[np.float32],
-    reaction_energy: float,
+    reaction_energy: NDArray[np.float32],
     N: float,
     R: float,
     v: NDArray[np.float32],
