@@ -123,7 +123,7 @@ def calculate_kappa(
      R: the gas constant
      T: temperature
     """
-    u = np.exp((((-G0) - reaction_energy) * Gatp) / R * T)
+    u = np.exp(((-G0) - reaction_energy * Gatp) / R * T)
     return u
 
 
