@@ -108,7 +108,7 @@ def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
 
 
 def calculate_kappa(
-    reaction_energy: NDArray[np.float32],
+    reaction_energy: float,
     Gatp: float = 75000,
     G0: float = 1.5e5,
     R: float = 8.314,
@@ -127,7 +127,7 @@ def calculate_kappa(
     return u
 
 
-def calculate_theta(reaction_energy: NDArray[np.float32], s: float, w: float) -> float:
+def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
     """A thermodynamic factor that stops a reaction at equilibrium.
 
     Args:
@@ -144,8 +144,8 @@ def q(
     R: float,
     s: float,
     w: float,
-    reaction_energy: NDArray[np.float32],
-    v: NDArray[np.float32],
+    reaction_energy: float,
+    v: float,
     ka: float = 10,
     ks: float = 1.375e-3,
     ra: float = 10,
@@ -172,8 +172,8 @@ def calculate_j(
     R: float,
     s: float,
     w: float,
-    v: NDArray[np.float32],
-    reaction_energy: NDArray[np.float32],
+    v: float,
+    reaction_energy: float,
     Gatp: float = 75000,
 ) -> float:
     """Calculates rate of ATP production in a species.
@@ -192,8 +192,8 @@ def calculate_j(
 
 def da(
     ta: float,
-    a: float,
-    R: float,
+    a: NDArray[np.float32],
+    R: NDArray[np.float32],
     s: float,
     w: float,
     reaction_energy: NDArray[np.float32],
@@ -214,17 +214,19 @@ def da(
     chi: is ATP use per elongation step
     m: total mass of the cell (in units of amino acids)
     """
-    j = calculate_j(R, s, w, v, reaction_energy)
-    lam = calculate_lam(a, R)
-    uda = j - chi * m * lam - a * lam
-    return uda
+    a_changes = np.zeros(len(a))
+    for ind, _ in enumerate(a):
+        j = calculate_j(R[ind], s, w, v[ind], reaction_energy[ind])
+        lam = calculate_lam(a[ind], R[ind])
+        a_changes[ind] = j - chi * m * lam - a[ind] * lam
+    return a_changes
 
 
 def dc(
     c: NDArray[np.float32],
     reaction_energy: NDArray[np.float32],
-    N: float,
-    R: float,
+    N: NDArray[np.float32],
+    R: NDArray[np.float32],
     v: NDArray[np.float32],
     k: float = 3.3e-7,
     p: float = 6e-5,
@@ -243,9 +245,15 @@ def dc(
     c_changes = np.zeros(len(c))
     for ind, _ in enumerate(c):
         if ind == 0:
-            c_changes[ind] = k - p * c[ind] - N * q(R, c[0], c[1], reaction_energy, v)
+            c_changes[ind] = (
+                k
+                - p * c[ind]
+                - N[ind] * q(R[ind], c[0], c[1], reaction_energy[ind], v[ind])
+            )
         else:
-            c_changes[ind] = -p * c[ind] + N * q(R, c[0], c[1], reaction_energy, v)
+            c_changes[ind] = -p * c[ind] + N[ind] * q(
+                R[ind], c[0], c[1], reaction_energy[ind], v[ind]
+            )
     return c_changes
 
 
