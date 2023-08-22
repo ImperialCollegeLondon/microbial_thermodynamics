@@ -52,14 +52,14 @@ def full_equation_set(
         s=y[3 * number_of_species],
         w=y[3 * number_of_species + 1],
         reaction_energy=reaction_energies,
-        v=np.array([1.0, 2.0]),
+        v=np.array([1.0, 1.0]),
     )
     change_in_c = dc(
         c=y[3 * number_of_species : 4 * number_of_species],
         reaction_energy=reaction_energies,
         N=y[0:number_of_species],
         R=y[number_of_species : 2 * number_of_species],
-        v=np.array([1.0, 2.0]),
+        v=np.array([1.0, 1.0]),
     )
     # Then combine these changes into a single vector and return that
     return np.concatenate((change_in_N, change_in_r, change_in_a, change_in_c))
