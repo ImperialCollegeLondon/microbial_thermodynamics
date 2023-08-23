@@ -94,9 +94,7 @@ def integrate() -> NDArray[np.float32]:
     output = solve_ivp(
         full_equation_set, t_span, y0, args=(number_of_species, reaction_energies)
     )
-    print(t_span)
-    print(y0)
-    print(number_of_species)
+
     return output
 
 

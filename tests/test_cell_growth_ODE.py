@@ -275,13 +275,13 @@ def test_dc():
     from microbial_thermodynamics.cell_growth_ODE import dc
 
     # Set of values to test
-    c = np.array([12,23,24,35])
-    reaction_energy = np.array(
-        [-1.500000001e5, -1.49999999999999e5, -1.5000000002e5, -1.5e5]
-    )
+    c = np.array([12, 23])
+    reaction_energy = np.array([1.0, 1.0])
     N = np.array([2, 5, 10, 23])
     R = np.array([0.12, 0.17, 0.25, 0.3])
     v = np.array([1e4, 1e6, 1e7, 1e8])
+
+    dc(c=c, reaction_energy=reaction_energy, N=N, R=R, v=v)
 """
 
 

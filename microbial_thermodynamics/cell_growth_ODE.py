@@ -110,7 +110,7 @@ def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
 def calculate_kappa(
     reaction_energy: float,
     Gatp: float = 75000,
-    G0: float = 1.5e5,
+    G0: float = -1.5e5,
     R: float = 8.314,
     T: float = 293.15,
 ) -> float:
@@ -123,7 +123,7 @@ def calculate_kappa(
      R: the gas constant
      T: temperature
     """
-    u = np.exp(((-G0) - reaction_energy * Gatp) / R * T)
+    u = np.exp(((-G0) - reaction_energy * Gatp) / (R * T))
     return u
 
 
@@ -135,8 +135,12 @@ def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
      s: substrate concentration
      w: waste product concentration
     """
-    kappa = calculate_kappa(reaction_energy)
-    u = (w / s) / kappa
+    if s == 0.0:
+        u = 1.0
+    else:
+        kappa = calculate_kappa(reaction_energy)
+        u = (w / s) / kappa
+
     return u
 
 
