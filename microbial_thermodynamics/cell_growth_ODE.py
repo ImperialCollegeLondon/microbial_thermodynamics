@@ -254,10 +254,31 @@ def dc(
                 - p * c[ind]
                 - N[ind] * q(R[ind], c[0], c[1], reaction_energy[ind], v[ind])
             )
-        else:
-            c_changes[ind] = -p * c[ind] + N[ind] * q(
-                R[ind], c[0], c[1], reaction_energy[ind], v[ind]
-            )
+        for metabolite_num, _ in enumerate(c):
+            for species_num, _ in enumerate(N):
+                if metabolite_num == 0:
+                    c_changes[metabolite_num] += (
+                        k
+                        - p * c[metabolite_num]
+                        - N[species_num]
+                        * q(
+                            R[species_num],
+                            c[0],
+                            c[1],
+                            reaction_energy[species_num],
+                            v[species_num],
+                        )
+                    )
+                else:
+                    c_changes[metabolite_num] += -p * c[metabolite_num] + N[
+                        species_num
+                    ] * q(
+                        R[species_num],
+                        c[0],
+                        c[1],
+                        reaction_energy[species_num],
+                        v[species_num],
+                    )
     return c_changes
 
 
