@@ -254,7 +254,8 @@ def dc(
                 - p * c[ind]
                 - N[ind] * q(R[ind], c[0], c[1], reaction_energy[ind], v[ind])
             )
-        for metabolite_num, _ in enumerate(c):
+        for metabolite_num, _ in enumerate(c):  # loops over all metabolites
+            # loops over species to calculate metabolite contribution for each species
             for species_num, _ in enumerate(N):
                 if metabolite_num == 0:
                     c_changes[metabolite_num] += (

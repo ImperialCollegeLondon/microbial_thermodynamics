@@ -100,9 +100,10 @@ def integrate() -> NDArray[np.float32]:
 
 def run_and_plot_population() -> None:
     """Runs the integrate function and plots population against time."""
-    plot_time = integrate().t
-    species_1_population = integrate().y[0]
-    species_2_population = integrate().y[1]
+    output = integrate()
+    plot_time = output().t
+    species_1_population = output().y[0]
+    species_2_population = output().y[1]
     plt.plot(plot_time, species_1_population, label="species 1")
     plt.plot(plot_time, species_2_population, label="species 2")
     plt.xlabel("Time")
@@ -113,9 +114,10 @@ def run_and_plot_population() -> None:
 
 def run_and_plot_r() -> None:
     """Runs the integrate function and plots ribosome fraction against time."""
-    plot_time = integrate().t
-    species_1_r = integrate().y[2]
-    species_2_r = integrate().y[3]
+    output = integrate()
+    plot_time = output().t
+    species_1_r = output().y[2]
+    species_2_r = output().y[3]
     plt.plot(plot_time, species_1_r, label="species 1")
     plt.plot(plot_time, species_2_r, label="species 2")
     plt.xlabel("Time")
@@ -126,9 +128,10 @@ def run_and_plot_r() -> None:
 
 def run_and_plot_a() -> None:
     """Integrate set of equations and plot internal energy (ATP) against time."""
-    plot_time = integrate().t
-    species_1_a = integrate().y[4]
-    species_2_a = integrate().y[5]
+    output = integrate()
+    plot_time = output().t
+    species_1_a = output().y[4]
+    species_2_a = output().y[5]
     plt.plot(plot_time, species_1_a, label="species 1")
     plt.plot(plot_time, species_2_a, label="species 2")
     plt.xlabel("Time")
@@ -137,4 +140,15 @@ def run_and_plot_a() -> None:
     plt.show()
 
 
-integrate()
+def run_and_plot_c() -> None:
+    """Plots metabolite concentration against time."""
+    output = integrate()
+    plot_time = output.t
+    species_1_c = output.y[6]
+    species_2_c = output.y[7]
+    plt.plot(plot_time, species_1_c, label="species 1")
+    plt.plot(plot_time, species_2_c, label="species 2")
+    plt.xlabel("Time")
+    plt.ylabel("Metabolite concentration")
+    plt.title("Metabolite concentration change")
+    plt.show()
