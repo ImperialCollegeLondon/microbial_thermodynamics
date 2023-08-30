@@ -84,7 +84,7 @@ def integrate() -> NDArray[np.float32]:
     N0 = [23.0, 2.3]
     r0 = [0.3, 0.3]
     a0 = [1e6, 1e6]
-    c0 = [0, 0]
+    c0 = [1000, 0]
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0, c0))
@@ -152,3 +152,6 @@ def run_and_plot_c() -> None:
     plt.ylabel("Metabolite concentration")
     plt.title("Metabolite concentration change")
     plt.show()
+
+
+run_and_plot_c()

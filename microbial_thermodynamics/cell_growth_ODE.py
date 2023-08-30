@@ -94,7 +94,9 @@ def dr(tr: float, a: float, R: float) -> float:
     return udr
 
 
-def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
+def calculate_E(
+    v: float, R: float, Q: float = 0.45, m: float = 1e8, avg_enzyme_mass: float = 300
+) -> float:
     """Calculates enzyme copy number.
 
     Args:
@@ -102,8 +104,9 @@ def calculate_E(v: float, R: float, Q: float = 0.45, m: float = 1e8) -> float:
      R: Ribosome fraction
      Q: Housekeeping proteome fraction
      m: Cell mass
+     avg_enzyme_mass: Average metabolic protein mass
     """
-    u = m * (v - R - Q)
+    u = (m * v * (1 - R - Q)) / avg_enzyme_mass
     return u
 
 
@@ -135,7 +138,7 @@ def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
      s: substrate concentration
      w: waste product concentration
     """
-    if s == 0.0:
+    if s <= 0.0:
         u = 1.0
     else:
         kappa = calculate_kappa(reaction_energy)
