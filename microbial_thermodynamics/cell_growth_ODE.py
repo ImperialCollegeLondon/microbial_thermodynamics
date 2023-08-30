@@ -237,6 +237,7 @@ def dc(
     v: NDArray[np.float32],
     k: float = 3.3e-7,
     p: float = 6e-5,
+    avogadros_number: float = 6.022e23,
 ) -> float:
     """Calculates the change in metabolite concentration.
 
@@ -248,6 +249,7 @@ def dc(
      v: the ith species' proportional expression level for reaction alpha
      k: substrate supply rate
      p: metabolite dilution rate
+     avogadros_number: atoms per mole
     """
     c_changes = np.zeros(len(c))
     for ind, _ in enumerate(c):
@@ -255,7 +257,9 @@ def dc(
             c_changes[ind] = (
                 k
                 - p * c[ind]
-                - N[ind] * q(R[ind], c[0], c[1], reaction_energy[ind], v[ind])
+                - N[ind]
+                * q(R[ind], c[0], c[1], reaction_energy[ind], v[ind])
+                / avogadros_number
             )
         for metabolite_num, _ in enumerate(c):  # loops over all metabolites
             # loops over species to calculate metabolite contribution for each species
@@ -272,16 +276,20 @@ def dc(
                             reaction_energy[species_num],
                             v[species_num],
                         )
+                        / avogadros_number
                     )
                 else:
-                    c_changes[metabolite_num] += -p * c[metabolite_num] + N[
-                        species_num
-                    ] * q(
-                        R[species_num],
-                        c[0],
-                        c[1],
-                        reaction_energy[species_num],
-                        v[species_num],
+                    c_changes[metabolite_num] += (
+                        -p * c[metabolite_num]
+                        + N[species_num]
+                        * q(
+                            R[species_num],
+                            c[0],
+                            c[1],
+                            reaction_energy[species_num],
+                            v[species_num],
+                        )
+                        / avogadros_number
                     )
     return c_changes
 
