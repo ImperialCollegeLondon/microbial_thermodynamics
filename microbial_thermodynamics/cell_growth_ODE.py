@@ -90,7 +90,8 @@ def dr(tr: float, a: float, R: float) -> float:
     """
     time_scale = calculate_time_scale(a, R)
     r_star = calculate_r_star(a)
-    udr = (1 / time_scale) * (r_star * a - R)
+    udr = (1 / time_scale) * (r_star - R)
+
     return udr
 
 
@@ -107,6 +108,7 @@ def calculate_E(
      avg_enzyme_mass: Average metabolic protein mass
     """
     u = (m * v * (1 - R - Q)) / avg_enzyme_mass
+
     return u
 
 
@@ -126,7 +128,7 @@ def calculate_kappa(
      R: the gas constant
      T: temperature
     """
-    u = np.exp(((-G0) - reaction_energy * Gatp) / (R * T))
+    u = np.exp(((-G0) - (reaction_energy * Gatp)) / (R * T))
     return u
 
 
@@ -171,6 +173,7 @@ def q(
     E = calculate_E(v, R)
     theta = calculate_theta(reaction_energy, s, w)
     u = (ka * E * s * (1 - theta)) / (ks + s * (1 + ra * theta))
+
     return u
 
 
@@ -193,6 +196,7 @@ def calculate_j(
      Gatp: ATP free energy
     """
     u = reaction_energy * q(R, s, w, reaction_energy, v)
+
     return u
 
 
@@ -225,6 +229,7 @@ def da(
         j = calculate_j(R[ind], s, w, v[ind], reaction_energy[ind])
         lam = calculate_lam(a[ind], R[ind])
         a_changes[ind] = j - chi * m * lam - a[ind] * lam
+
     return a_changes
 
 

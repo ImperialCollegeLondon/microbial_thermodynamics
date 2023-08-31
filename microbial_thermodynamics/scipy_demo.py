@@ -199,4 +199,4 @@ def plot_j() -> None:
     plt.show()
 
 
-plot_j()
+plot_lambda()
