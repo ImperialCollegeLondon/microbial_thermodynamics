@@ -143,7 +143,6 @@ def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
     else:
         kappa = calculate_kappa(reaction_energy)
         u = (w / s) / kappa
-
     return u
 
 

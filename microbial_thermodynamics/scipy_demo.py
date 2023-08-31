@@ -81,10 +81,10 @@ def integrate() -> NDArray[np.float32]:
     number_of_species = 2
 
     # This means that each variable has 2 initial conditions
-    N0 = [23.0, 2.3]
+    N0 = [230, 20.3]
     r0 = [0.3, 0.3]
     a0 = [1e6, 1e6]
-    c0 = [0, 0]
+    c0 = [2000, 2000]
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0, c0))
@@ -101,9 +101,9 @@ def integrate() -> NDArray[np.float32]:
 def run_and_plot_population() -> None:
     """Runs the integrate function and plots population against time."""
     output = integrate()
-    plot_time = output().t
-    species_1_population = output().y[0]
-    species_2_population = output().y[1]
+    plot_time = output.t
+    species_1_population = output.y[0]
+    species_2_population = output.y[1]
     plt.plot(plot_time, species_1_population, label="species 1")
     plt.plot(plot_time, species_2_population, label="species 2")
     plt.xlabel("Time")
@@ -115,9 +115,9 @@ def run_and_plot_population() -> None:
 def run_and_plot_r() -> None:
     """Runs the integrate function and plots ribosome fraction against time."""
     output = integrate()
-    plot_time = output().t
-    species_1_r = output().y[2]
-    species_2_r = output().y[3]
+    plot_time = output.t
+    species_1_r = output.y[2]
+    species_2_r = output.y[3]
     plt.plot(plot_time, species_1_r, label="species 1")
     plt.plot(plot_time, species_2_r, label="species 2")
     plt.xlabel("Time")
@@ -129,9 +129,9 @@ def run_and_plot_r() -> None:
 def run_and_plot_a() -> None:
     """Integrate set of equations and plot internal energy (ATP) against time."""
     output = integrate()
-    plot_time = output().t
-    species_1_a = output().y[4]
-    species_2_a = output().y[5]
+    plot_time = output.t
+    species_1_a = output.y[4]
+    species_2_a = output.y[5]
     plt.plot(plot_time, species_1_a, label="species 1")
     plt.plot(plot_time, species_2_a, label="species 2")
     plt.xlabel("Time")
@@ -154,4 +154,49 @@ def run_and_plot_c() -> None:
     plt.show()
 
 
-run_and_plot_c()
+def plot_lambda() -> None:
+    """Plots labda from integrate output."""
+    output = integrate()
+    plot_time = output.t
+    # Find a and R values for species 1 for the whole simulation
+    species_1_a = output.y[4]
+    species_1_R = output.y[2]
+    # Use the a and R values to calculate lambda from the function you already defined
+    from microbial_thermodynamics.cell_growth_ODE import calculate_lam
+
+    species_1_lambda = calculate_lam(a=species_1_a, R=species_1_R)
+    # Then plot lambda against time
+    plt.plot(plot_time, species_1_lambda)
+    plt.xlabel("Time")
+    plt.ylabel("lambda")
+    plt.show()
+
+
+def plot_j() -> None:
+    """Plots j from integrate output."""
+    output = integrate()
+    plot_time = output.t
+    # Find a and R values for species 1 for the whole simulation
+    species_1_R = output.y[2]
+    metabolite_1 = output.y[6]
+    metabolite_2 = output.y[7]
+    # Use the a and R values to calculate lambda from the function you already defined
+    from microbial_thermodynamics.cell_growth_ODE import calculate_j
+
+    # Create empty vector to store j value for each time point in plot_time
+    species_1_j = np.zeros(len(plot_time))
+    for ind, _ in enumerate(plot_time):
+        species_1_j[ind] = calculate_j(
+            R=species_1_R[ind],
+            s=metabolite_1[ind],
+            w=metabolite_2[ind],
+            v=1.0,
+            reaction_energy=1.0,
+        )
+    plt.plot(plot_time, species_1_j)
+    plt.xlabel("Time")
+    plt.ylabel("j")
+    plt.show()
+
+
+plot_j()
