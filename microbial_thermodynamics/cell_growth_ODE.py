@@ -13,12 +13,12 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-def calculate_gam(a: float, ym: float = 1260.0, y_half: float = 5e8) -> float:
+def calculate_gam(a: float, ym: float = 21, y_half: float = 5e8) -> float:
     """Calculates the cellular growth rate.
 
     Args:
      a: internal energy (ATP) concentration
-     ym: Maximum elongation rate
+     ym: Maximum elongation rate (1260 steps per minute = 21 per second)
      y_half: Elongation half saturation constant
     """
     u = (ym * a) / (y_half + a)
@@ -49,21 +49,21 @@ def calculate_r_star(a: float, om: float = 1e9, Q: float = 0.45) -> float:
     return u
 
 
-def calculate_lam(a: float, R: float, m: float = 1e8, fb: float = 0.7) -> float:
+def calculate_lam(a: float, R: float, nr: float = 7459, fb: float = 0.7) -> float:
     """Calculates species growth.
 
     Args:
      a: internal energy (ATP) concentration
      R: Ribosome fraction
-     m: Cell mass
+     nr: Average ribosome mass (amino acids)
      fb: Average fraction of ribosomes bound
     """
     gam = calculate_gam(a)
-    u = (gam * fb * R) / m
+    u = (gam * fb * R) / nr
     return u
 
 
-def dN(tN: float, N: float, a: float, R: float, d: float = 0.1) -> float:
+def dN(tN: float, N: float, a: float, R: float, d: float = 6e-5) -> float:
     """Rate of change of population growth.
 
     Args:

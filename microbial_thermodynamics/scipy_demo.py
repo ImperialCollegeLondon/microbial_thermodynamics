@@ -73,7 +73,7 @@ def integrate() -> NDArray[np.float32]:
     """
 
     # Set the update time (in seconds)
-    update_time = 100.0
+    update_time = 10000.0
     # Use this to make the time span (starts at time = 0s)
     t_span = (0.0, update_time)
 
@@ -197,6 +197,3 @@ def plot_j() -> None:
     plt.xlabel("Time")
     plt.ylabel("j")
     plt.show()
-
-
-plot_lambda()
