@@ -73,7 +73,7 @@ def integrate() -> NDArray[np.float32]:
     """
 
     # Set the update time (in seconds)
-    update_time = 10000.0
+    update_time = 200000.0
     # Use this to make the time span (starts at time = 0s)
     t_span = (0.0, update_time)
 
@@ -81,14 +81,14 @@ def integrate() -> NDArray[np.float32]:
     number_of_species = 2
 
     # This means that each variable has 2 initial conditions
-    N0 = [230, 20.3]
+    N0 = [20.3, 20.3]
     r0 = [0.3, 0.3]
     a0 = [1e6, 1e6]
     c0 = [2000, 2000]
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0, c0))
-    reaction_energies = np.array([1.0, 1.0])
+    reaction_energies = np.array([1.0, 1.5])
     # Carry out simulation, by supplying the set of equations, time span, initial
     # condition, and any extra arguments
     output = solve_ivp(
@@ -109,6 +109,7 @@ def run_and_plot_population() -> None:
     plt.xlabel("Time")
     plt.ylabel("Population")
     plt.title("Population change")
+    plt.legend()
     plt.show()
 
 
