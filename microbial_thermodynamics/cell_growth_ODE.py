@@ -24,6 +24,8 @@ def calculate_gam(
     return u
 
 
+# TODO - This probably should take lambda as an input, to minimise the number of times
+# it's calculated
 def calculate_time_scale(
     a: NDArray[np.float32], R: NDArray[np.float32]
 ) -> NDArray[np.float32]:
@@ -125,6 +127,7 @@ def calculate_E(
     return u
 
 
+# TODO - G0 probably shouldn't be given a default value here in future
 def calculate_kappa(
     reaction_energy: float,
     Gatp: float = 75000,
