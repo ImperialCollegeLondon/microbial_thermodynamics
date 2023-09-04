@@ -1,11 +1,8 @@
-"""Summary:
+"""Module to calculate cell growth rates for the ODE model.
+
 This calculates rates of change of population growth, ribosome fraction and
 internal energy production.
-
-Desctiption:
-I am uncertain if the R in calculate_lam and the r in dr are the same thing (ribosome
-fraction). Should I find values for gam and R or write functions.
-"""  # noqa: D205
+"""
 
 from typing import Callable
 
@@ -14,7 +11,7 @@ from numpy.typing import NDArray
 
 
 def calculate_gam(a: float, ym: float = 21, y_half: float = 5e8) -> float:
-    """Calculates the cellular growth rate.
+    """Calculate the cellular growth rate.
 
     Args:
      a: internal energy (ATP) concentration
@@ -26,7 +23,7 @@ def calculate_gam(a: float, ym: float = 21, y_half: float = 5e8) -> float:
 
 
 def calculate_time_scale(a: float, R: float) -> float:
-    """Calculates characteristic time scale for growth.
+    """Calculate characteristic time scale for growth.
 
     Args:
      a: internal energy (ATP) concentration
@@ -38,7 +35,7 @@ def calculate_time_scale(a: float, R: float) -> float:
 
 
 def calculate_r_star(a: float, om: float = 1e9, Q: float = 0.45) -> float:
-    """Calculates ideal ribosome fraction.
+    """Calculate ideal ribosome fraction.
 
     Args:
        a: internal energy (ATP) concentration
@@ -50,7 +47,7 @@ def calculate_r_star(a: float, om: float = 1e9, Q: float = 0.45) -> float:
 
 
 def calculate_lam(a: float, R: float, nr: float = 7459, fb: float = 0.7) -> float:
-    """Calculates species growth.
+    """Calculate species growth.
 
     Args:
      a: internal energy (ATP) concentration
@@ -98,7 +95,7 @@ def dr(tr: float, a: float, R: float) -> float:
 def calculate_E(
     v: float, R: float, Q: float = 0.45, m: float = 1e8, avg_enzyme_mass: float = 300
 ) -> float:
-    """Calculates enzyme copy number.
+    """Calculate enzyme copy number.
 
     Args:
      v: the ith species' proportional expression level for reaction alpha
@@ -119,7 +116,7 @@ def calculate_kappa(
     R: float = 8.314,
     T: float = 293.15,
 ) -> float:
-    """Calculates the kappa constant.
+    """Calculate the kappa constant.
 
     Args:
      reaction_energy: the ATP generated for each species for each reaction alpha
@@ -133,7 +130,7 @@ def calculate_kappa(
 
 
 def calculate_theta(reaction_energy: float, s: float, w: float) -> float:
-    """A thermodynamic factor that stops a reaction at equilibrium.
+    """Calculate the thermodynamic factor that stops a reaction at equilibrium.
 
     Args:
      reaction_energy: the ATP generated for each species for each reaction alpha
@@ -158,7 +155,7 @@ def q(
     ks: float = 1.375e-3,
     ra: float = 10,
 ) -> float:
-    """Calculates reaction rate.
+    """Calculate reaction rate.
 
     Args:
      R: Ribosome fraction
@@ -185,7 +182,7 @@ def calculate_j(
     reaction_energy: float,
     Gatp: float = 75000,
 ) -> float:
-    """Calculates rate of ATP production in a species.
+    """Calculate rate of ATP production in a species.
 
     Args:
      R: Ribosome fraction
@@ -210,8 +207,8 @@ def da(
     v: NDArray[np.float32],
     chi: float = 29,
     m: float = 1e8,
-) -> float:
-    """Rate of change of internal energy (ATP) production.
+) -> NDArray[np.float32]:
+    """Calculate rate of change of internal energy (ATP) production.
 
     Args:
     ta: time
@@ -242,8 +239,8 @@ def dc(
     k: float = 3.3e-7,
     p: float = 6e-5,
     avogadros_number: float = 6.022e23,
-) -> float:
-    """Calculates the change in metabolite concentration.
+) -> NDArray[np.float32]:
+    """Calculate the change in metabolite concentration.
 
     Args:
      c: metabolite concentration

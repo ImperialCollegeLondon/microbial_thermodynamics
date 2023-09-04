@@ -99,7 +99,7 @@ def integrate() -> NDArray[np.float32]:
 
 
 def run_and_plot_population() -> None:
-    """Runs the integrate function and plots population against time."""
+    """Run the integrate function and plots population against time."""
     output = integrate()
     plot_time = output.t
     species_1_population = output.y[0]
@@ -114,7 +114,7 @@ def run_and_plot_population() -> None:
 
 
 def run_and_plot_r() -> None:
-    """Runs the integrate function and plots ribosome fraction against time."""
+    """Run the integrate function and plots ribosome fraction against time."""
     output = integrate()
     plot_time = output.t
     species_1_r = output.y[2]
@@ -142,7 +142,7 @@ def run_and_plot_a() -> None:
 
 
 def run_and_plot_c() -> None:
-    """Plots metabolite concentration against time."""
+    """Plot metabolite concentration against time."""
     output = integrate()
     plot_time = output.t
     species_1_c = output.y[6]
@@ -156,7 +156,7 @@ def run_and_plot_c() -> None:
 
 
 def plot_lambda() -> None:
-    """Plots labda from integrate output."""
+    """Plot labda from integrate output."""
     output = integrate()
     plot_time = output.t
     # Find a and R values for species 1 for the whole simulation
@@ -174,7 +174,7 @@ def plot_lambda() -> None:
 
 
 def plot_j() -> None:
-    """Plots j from integrate output."""
+    """Plot j from integrate output."""
     output = integrate()
     plot_time = output.t
     # Find a and R values for species 1 for the whole simulation
