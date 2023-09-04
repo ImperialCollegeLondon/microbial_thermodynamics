@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "microbial-thermodynamics"
-version = "0.1.0a0"
+version = "0.1.0"
 description = ""
 authors = ["Jacob Cook <jc2017@ic.ac.uk>"]
 readme = "README.md"
