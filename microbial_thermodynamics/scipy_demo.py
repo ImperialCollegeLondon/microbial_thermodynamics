@@ -14,7 +14,10 @@ from microbial_thermodynamics.cell_growth_ODE import da, dc, dN, dr
 
 
 def full_equation_set(
-    t: float, y: NDArray[np.float32], number_of_species: int, reaction_energies: float
+    t: float,
+    y: NDArray[np.float32],
+    number_of_species: int,
+    reaction_energies: NDArray[np.float32],
 ) -> NDArray[np.float32]:
     """Function that combines all equations together into one set that can be simulated.
 

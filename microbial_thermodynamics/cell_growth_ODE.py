@@ -60,7 +60,13 @@ def calculate_lam(a: float, R: float, nr: float = 7459, fb: float = 0.7) -> floa
     return u
 
 
-def dN(tN: float, N: float, a: float, R: float, d: float = 6e-5) -> float:
+def dN(
+    tN: float,
+    N: NDArray[np.float32],
+    a: NDArray[np.float32],
+    R: NDArray[np.float32],
+    d: float = 6e-5,
+) -> NDArray[np.float32]:
     """Rate of change of population growth.
 
     Args:
@@ -76,7 +82,9 @@ def dN(tN: float, N: float, a: float, R: float, d: float = 6e-5) -> float:
     return udN
 
 
-def dr(tr: float, a: float, R: float) -> float:
+def dr(
+    tr: float, a: NDArray[np.float32], R: NDArray[np.float32]
+) -> NDArray[np.float32]:
     """Rate of change of ribosome fration.
 
     Args:
