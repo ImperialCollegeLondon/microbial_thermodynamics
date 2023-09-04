@@ -10,7 +10,9 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-def calculate_gam(a: float, ym: float = 21, y_half: float = 5e8) -> float:
+def calculate_gam(
+    a: NDArray[np.float32], ym: float = 21, y_half: float = 5e8
+) -> NDArray[np.float32]:
     """Calculate the cellular growth rate.
 
     Args:
@@ -22,7 +24,9 @@ def calculate_gam(a: float, ym: float = 21, y_half: float = 5e8) -> float:
     return u
 
 
-def calculate_time_scale(a: float, R: float) -> float:
+def calculate_time_scale(
+    a: NDArray[np.float32], R: NDArray[np.float32]
+) -> NDArray[np.float32]:
     """Calculate characteristic time scale for growth.
 
     Args:
@@ -34,7 +38,9 @@ def calculate_time_scale(a: float, R: float) -> float:
     return u
 
 
-def calculate_r_star(a: float, om: float = 1e9, Q: float = 0.45) -> float:
+def calculate_r_star(
+    a: NDArray[np.float32], om: float = 1e9, Q: float = 0.45
+) -> NDArray[np.float32]:
     """Calculate ideal ribosome fraction.
 
     Args:
@@ -46,7 +52,9 @@ def calculate_r_star(a: float, om: float = 1e9, Q: float = 0.45) -> float:
     return u
 
 
-def calculate_lam(a: float, R: float, nr: float = 7459, fb: float = 0.7) -> float:
+def calculate_lam(
+    a: NDArray[np.float32], R: NDArray[np.float32], nr: float = 7459, fb: float = 0.7
+) -> NDArray[np.float32]:
     """Calculate species growth.
 
     Args:
@@ -229,7 +237,7 @@ def da(
     chi: is ATP use per elongation step
     m: total mass of the cell (in units of amino acids)
     """
-    a_changes = np.zeros(len(a))
+    a_changes = np.zeros(len(a), dtype=np.float32)
     for ind, _ in enumerate(a):
         j = calculate_j(R[ind], s, w, v[ind], reaction_energy[ind])
         lam = calculate_lam(a[ind], R[ind])
@@ -260,7 +268,7 @@ def dc(
      p: metabolite dilution rate
      avogadros_number: atoms per mole
     """
-    c_changes = np.zeros(len(c))
+    c_changes = np.zeros(len(c), dtype=np.float32)
     for ind, _ in enumerate(c):
         if ind == 0:
             c_changes[ind] = (
@@ -310,7 +318,9 @@ def forward_euler(
     u0: float,
     T: float,
     N: int,
-) -> tuple[list[float], list[float], list[float], list[float]]:
+) -> tuple[
+    NDArray[np.float32], NDArray[np.float32], NDArray[np.float32], NDArray[np.float32]
+]:
     """Solve u’=f(t, u), u(0)=u0 with n steps until t=T.
 
     Args:
@@ -332,10 +342,10 @@ def forward_euler(
         An array for t and an array for u for each of the three functions
         These represent an approximated solution to the three ODEs.
     """
-    t = np.zeros(N + 1)
-    u_N = np.zeros(N + 1)
-    u_r = np.zeros(N + 1)
-    u_a = np.zeros(N + 1)
+    t = np.zeros(N + 1, dtype=np.float32)
+    u_N = np.zeros(N + 1, dtype=np.float32)
+    u_r = np.zeros(N + 1, dtype=np.float32)
+    u_a = np.zeros(N + 1, dtype=np.float32)
     u_N[0] = u_r[0] = u_a[0] = u0
     dt = T / N
     for n in range(N):

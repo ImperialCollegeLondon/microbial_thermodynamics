@@ -1,14 +1,14 @@
 """A script to demonstrate how to use scipy to integrate."""
 
 # Import numpy to handle the vector stuff (call it np for short)
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # type: ignore
 import numpy as np
 
 # This is only imported so that a type hint can be provided
 from numpy.typing import NDArray
 
 # Importing solve_ivp as the specific solver to use this might change in future
-from scipy.integrate import solve_ivp
+from scipy.integrate import solve_ivp  # type: ignore
 
 from microbial_thermodynamics.cell_growth_ODE import da, dc, dN, dr
 
@@ -68,7 +68,7 @@ def full_equation_set(
     return np.concatenate((change_in_N, change_in_r, change_in_a, change_in_c))
 
 
-def integrate() -> NDArray[np.float32]:
+def integrate() -> solve_ivp:
     """Integrate the model using solve_ivp.
 
     Returns:
@@ -87,7 +87,7 @@ def integrate() -> NDArray[np.float32]:
     N0 = [20.3, 20.3]
     r0 = [0.3, 0.3]
     a0 = [1e6, 1e6]
-    c0 = [2000, 2000]
+    c0 = [2000.0, 2000.0]
 
     # Construct vector of initial values y0
     y0 = np.concatenate((N0, r0, a0, c0))
